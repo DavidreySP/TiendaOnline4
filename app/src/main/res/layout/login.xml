@@ -69,12 +69,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewSavedText"
+            <Button
+                android:id="@+id/login_check"
                 android:layout_width="200dp"
                 android:layout_height="55dp"
                 android:layout_marginVertical="10dp"
-                android:onClick="login_check"
                 android:text="Ingresar"
                 android:textSize="17sp"/>
 
