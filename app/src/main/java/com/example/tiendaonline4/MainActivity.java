@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    LinearLayout lista_productos, registro_clientes, carrito_compra, logout;
+    LinearLayout lista_productos, registro_clientes, carrito_compra, logout, geolocalizacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         registro_clientes = findViewById(R.id.opt_menu_registro_clientes);
         carrito_compra = findViewById(R.id.opt_menu_carrito_compra);
         logout = findViewById(R.id.opt_menu_sign_out);
+        geolocalizacion = findViewById(R.id.opt_menu_geolocalizacion);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 redirectActivity(MainActivity.this, CarritoCompra.class);
+            }
+        });
+
+        geolocalizacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                redirectActivity(MainActivity.this, Geolocalizacion.class);
             }
         });
 
