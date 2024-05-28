@@ -11,13 +11,13 @@ public class Producto {
     String nombre;
     Long precio;
     String imagen;
-    int cantidad_seleccionada;
+    Long cantidad_seleccionada;
 
-    public int getCantidad_seleccionada() {
+    public Long getCantidad_seleccionada() {
         return cantidad_seleccionada;
     }
 
-    public void setCantidad_seleccionada(int cantidad_seleccionada) {
+    public void setCantidad_seleccionada(Long cantidad_seleccionada) {
         this.cantidad_seleccionada = cantidad_seleccionada;
     }
 

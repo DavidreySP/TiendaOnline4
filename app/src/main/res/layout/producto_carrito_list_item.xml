@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="100dp"
+            android:layout_height="90dp"
+            app:cardCornerRadius="20dp"
+            android:layout_margin="5dp"
+            android:elevation="10dp">
+
+            <ImageView
+                android:id="@+id/list_productos_imagen"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@mipmap/ic_launcher_round"
+                android:background="@color/white"
+                android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100sp"
+            android:padding="10sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5sp"
+                android:text="@string/app_name"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:id="@+id/list_productos_nombre"
+                android:textColor="?attr/colorPrimary"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/list_productos_nombre"
+                android:id="@+id/list_productos_precio"
+                android:layout_marginStart="5sp"
+                android:layout_marginEnd="5sp"
+                android:singleLine="true"
+                android:textSize="15dp"
+                android:text="@string/app_name"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/list_productos_precio"
+                android:id="@+id/list_productos_cantidad"
+                android:layout_marginStart="5sp"
+                android:layout_marginEnd="5sp"
+                android:singleLine="true"
+                android:textSize="15dp"
+                android:text="@string/app_name"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

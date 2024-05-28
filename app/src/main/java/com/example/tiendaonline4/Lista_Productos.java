@@ -58,35 +58,6 @@ public class Lista_Productos extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recycler_lista_producto);
 
-        Button sumar_cantidad = findViewById(R.id.sumar_cantidad);
-        Button restar_cantidad = findViewById(R.id.restar_cantidad);
-
-        sumar_cantidad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView titulo_articulo_carrito = findViewById(R.id.titulo_articulo_carrito);
-
-                int aux_val = Integer.parseInt(titulo_articulo_carrito.getText().toString());
-
-                aux_val++;
-                titulo_articulo_carrito.setText(aux_val);
-            }
-        });
-
-        restar_cantidad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView titulo_articulo_carrito = findViewById(R.id.titulo_articulo_carrito);
-
-                int aux_val = Integer.parseInt(titulo_articulo_carrito.getText().toString());
-
-                if(aux_val != 0){
-                    aux_val--;
-                    titulo_articulo_carrito.setText(aux_val);
-                }
-            }
-        });
-
         database.getReference().child("productos").addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -107,12 +78,16 @@ public class Lista_Productos extends AppCompatActivity {
                     public void onClick(Producto producto) {
                         View view = LayoutInflater.from(Lista_Productos.this).inflate(R.layout.add_producto_carrito, null);
 
-                        TextView titulo_articulo_carrito, cantidad_articulo;
+                        TextView titulo_articulo_carrito;
 
                         titulo_articulo_carrito = view.findViewById(R.id.titulo_articulo_carrito);
                         titulo_articulo_carrito.setText(producto.getNombre());
 
-                        cantidad_articulo = view.findViewById(R.id.cantidad_articulo);
+                        TextInputLayout cantidad_pedidoLayout;
+                        cantidad_pedidoLayout = view.findViewById(R.id.cantidad_pedidoLayout);
+
+                        TextInputEditText cantidad_pedidoET;
+                        cantidad_pedidoET = view.findViewById(R.id.cantidad_pedidoET);
 
                         ProgressDialog progressDialog = new ProgressDialog(Lista_Productos.this);
 
@@ -122,9 +97,13 @@ public class Lista_Productos extends AppCompatActivity {
                             .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    if (Integer.parseInt(cantidad_articulo.getText().toString()) >= 0) {
+                                    if (Objects.requireNonNull(cantidad_pedidoET.getText()).toString().equals("0")) {
+                                        cantidad_pedidoLayout.setError("No pueden seleccionar cantidades negativas o iguales a 0");
                                         Toast.makeText(Lista_Productos.this, "No pueden seleccionar cantidades negativas o iguales a 0", Toast.LENGTH_SHORT).show();
-                                    } else {
+                                    } else if(Objects.requireNonNull(cantidad_pedidoET.getText()).toString().isEmpty()) {
+                                        cantidad_pedidoLayout.setError("No pueden seleccionar cantidades negativas o iguales a 0");
+                                        Toast.makeText(Lista_Productos.this, "No pueden seleccionar cantidades negativas o iguales a 0", Toast.LENGTH_SHORT).show();
+                                    }else{
                                         progressDialog.setMessage("Guardando...");
                                         progressDialog.show();
 
@@ -132,7 +111,7 @@ public class Lista_Productos extends AppCompatActivity {
                                         producto1.setNombre(producto.getNombre());
                                         producto1.setImagen(producto.getImagen());
                                         producto1.setPrecio(producto.getPrecio());
-                                        producto1.setCantidad_seleccionada(Integer.parseInt(cantidad_articulo.getText().toString()));
+                                        producto1.setCantidad_seleccionada(Long.valueOf(cantidad_pedidoET.getText().toString()));
 
                                         ProgressDialog dialog = new ProgressDialog(Lista_Productos.this);
                                         dialog.setMessage("Cargando, por favor espere...");
@@ -140,7 +119,7 @@ public class Lista_Productos extends AppCompatActivity {
                                         database.getReference().child("carrito").push().setValue(producto1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                dialog.dismiss();
+                                                progressDialog.dismiss();
                                                 dialogInterface.dismiss();
                                                 Toast.makeText(Lista_Productos.this, "Guardado Exitosamente!", Toast.LENGTH_SHORT).show();
                                             }
@@ -223,14 +202,6 @@ public class Lista_Productos extends AppCompatActivity {
         });
     }
 
-    public void sumar(){
-
-    }
-
-    public void restar(){
-
-    }
-
     public static void openDrawer(DrawerLayout drawerLayout){
         drawerLayout.openDrawer(GravityCompat.START);
     }
@@ -252,6 +223,4 @@ public class Lista_Productos extends AppCompatActivity {
         super.onPause();
         closeDrawer(drawerLayout);
     }
-
-
 }
