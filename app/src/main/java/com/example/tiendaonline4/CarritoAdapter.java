@@ -35,8 +35,9 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull CarritoAdapter.ViewHolder holder, int position) {
         holder.nombre.setText(arrayList.get(position).getNombre());
-        holder.precio.setText("Precio: "+arrayList.get(position).getPrecio().toString());
-        holder.cantidad.setText(arrayList.get(position).getCantidad_seleccionada().toString());
+        holder.precio.setText("Precio: $"+arrayList.get(position).getPrecio().toString());
+        holder.total.setText("Total: $"+Integer.parseInt(arrayList.get(position).getCantidad_seleccionada().toString())*Integer.parseInt(arrayList.get(position).getPrecio().toString()));
+        holder.cantidad.setText("Cantidad Pedida: "+arrayList.get(position).getCantidad_seleccionada().toString());
         Glide.with(context).load(arrayList.get(position).getImagen()).into(holder.imagen);
 
         holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(arrayList.get(position)));
@@ -52,13 +53,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre, precio, cantidad;
+        TextView nombre, precio, cantidad, total;
         ImageView imagen;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.list_productos_nombre);
             precio = itemView.findViewById(R.id.list_productos_precio);
             imagen = itemView.findViewById(R.id.list_productos_imagen);
+            total = itemView.findViewById(R.id.list_productos_total);
             cantidad = itemView.findViewById(R.id.list_productos_cantidad);
         }
     }

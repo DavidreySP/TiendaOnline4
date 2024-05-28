@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
@@ -51,6 +52,52 @@ public class CarritoCompra extends AppCompatActivity {
         FirebaseApp.initializeApp(CarritoCompra.this);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+        FloatingActionButton add = findViewById(R.id.confirmar_compra);
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                View view1 = LayoutInflater.from(CarritoCompra.this).inflate(R.layout.cerrar_compra, null);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(CarritoCompra.this)
+                        .setTitle("Cerrar Compra")
+                        .setView(view1)
+                        .setPositiveButton("Comprar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    ProgressDialog dialog = new ProgressDialog(CarritoCompra.this);
+                                dialog.setMessage("Cargando, por favor espere...");
+                                dialog.show();
+                                database.getReference().child("carrito").removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        dialog.dismiss();
+                                        dialogInterface.dismiss();
+                                        Toast.makeText(CarritoCompra.this, "Cierre de Compra Exitoso!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        dialog.dismiss();
+                                        Toast.makeText(CarritoCompra.this, "Ocurrio un error durante el proceso", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create();
+                alertDialog.show();
+            }
+        });
+
         RecyclerView recyclerView = findViewById(R.id.recycler_carrito_compra);
 
         database.getReference().child("carrito").addValueEventListener(new ValueEventListener() {
@@ -63,14 +110,14 @@ public class CarritoCompra extends AppCompatActivity {
                     Objects.requireNonNull(producto).setKey(dataSnapshot.getKey());
                     arrayList.add(producto);
 
-                    total_precio = producto.getPrecio()*producto.getCantidad_seleccionada();
+                    total_precio += producto.getPrecio()*producto.getCantidad_seleccionada();
                 }
 
                 CarritoAdapter adapter = new CarritoAdapter(CarritoCompra.this, arrayList);
                 recyclerView.setAdapter(adapter);
 
                 TextView total_compra_TV = (TextView) findViewById(R.id.total_compra);
-                total_compra_TV.setText(total_precio.toString());
+                total_compra_TV.setText("Total a pagar: $"+total_precio.toString());
 
                 adapter.setOnItemClickListener(new CarritoAdapter.OnItemClickListener() {
                     @Override
@@ -87,6 +134,7 @@ public class CarritoCompra extends AppCompatActivity {
 
                         TextInputEditText cantidad_pedidoET;
                         cantidad_pedidoET = view.findViewById(R.id.cantidad_pedidoET);
+                        cantidad_pedidoET.setText(producto.getCantidad_seleccionada().toString());
 
                         ProgressDialog progressDialog = new ProgressDialog(CarritoCompra.this);
                         AlertDialog alertDialog = new AlertDialog.Builder(CarritoCompra.this)
@@ -109,7 +157,6 @@ public class CarritoCompra extends AppCompatActivity {
                                             producto1.setNombre(producto.getNombre());
                                             producto1.setImagen(producto.getImagen());
                                             producto1.setPrecio(producto.getPrecio());
-                                            cantidad_pedidoET.setText(producto.getCantidad_seleccionada().toString());
                                             producto1.setCantidad_seleccionada(Long.valueOf(cantidad_pedidoET.getText().toString()));
 
                                             database.getReference().child("carrito").child(producto.getKey()).setValue(producto1).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -117,6 +164,7 @@ public class CarritoCompra extends AppCompatActivity {
                                                 public void onSuccess(Void unused) {
                                                     progressDialog.dismiss();
                                                     dialogInterface.dismiss();
+                                                    total_precio=0L;
                                                     Toast.makeText(CarritoCompra.this, "Guardado Exitosamente", Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
@@ -144,6 +192,7 @@ public class CarritoCompra extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Void unused) {
                                                 progressDialog.dismiss();
+                                                total_precio=0L;
                                                 Toast.makeText(CarritoCompra.this, "Eliminado exitosamente", Toast.LENGTH_SHORT).show();
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {

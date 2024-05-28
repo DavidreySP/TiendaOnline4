@@ -59,7 +59,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="16sp"
                 android:id="@+id/confirmar_compra"
-                android:src="@drawable/baseline_add_24"/>
+                android:src="@drawable/baseline_add_shopping_cart_24"/>
         </RelativeLayout>
 
     </LinearLayout>
