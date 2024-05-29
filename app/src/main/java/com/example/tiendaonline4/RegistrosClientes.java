@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,9 @@ public class RegistrosClientes extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu;
     LinearLayout lista_productos, registro_clientes, carrito_compra, logout, geolocalizacion;
+    SearchView seachView;
+    ClienteAdapter adapter;
+    ArrayList<Cliente> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,14 +121,16 @@ public class RegistrosClientes extends AppCompatActivity {
         });
 
         TextView empty = findViewById(R.id.vacio);
-
         RecyclerView recyclerView = findViewById(R.id.recycler);
+
+        seachView = findViewById(R.id.search);
+        seachView.clearFocus();
 
         database.getReference().child("clientes").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Cliente> arrayList = new ArrayList<>();
+                arrayList = new ArrayList<>();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Cliente cliente = dataSnapshot.getValue(Cliente.class);
                     Objects.requireNonNull(cliente).setKey(dataSnapshot.getKey());
@@ -139,7 +145,7 @@ public class RegistrosClientes extends AppCompatActivity {
                     recyclerView.setVisibility(View.VISIBLE);
                 }
 
-                ClienteAdapter adapter = new ClienteAdapter(RegistrosClientes.this, arrayList);
+                adapter = new ClienteAdapter(RegistrosClientes.this, arrayList);
                 recyclerView.setAdapter(adapter);
 
                 adapter.setOnItemClickListener(new ClienteAdapter.OnItemClickListener() {
@@ -237,6 +243,19 @@ public class RegistrosClientes extends AppCompatActivity {
             }
         });
 
+        seachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList(newText);
+                return true;
+            }
+        });
+
         drawerLayout = findViewById(R.id.drawerLayout);
         menu = findViewById(R.id.menu);
         lista_productos = findViewById(R.id.opt_menu_lista_productos);
@@ -287,6 +306,17 @@ public class RegistrosClientes extends AppCompatActivity {
                 redirectActivity(RegistrosClientes.this, Login.class);
             }
         });
+    }
+
+    public void searchList(String text){
+        ArrayList<Cliente> searchList = new ArrayList<>();
+        for(Cliente cliente: arrayList){
+            if(cliente.getNombre().toLowerCase().contains(text.toLowerCase())){
+                searchList.add(cliente);
+            }
+
+            adapter.searchDataList(searchList);
+        }
     }
 
     public static void openDrawer(DrawerLayout drawerLayout){

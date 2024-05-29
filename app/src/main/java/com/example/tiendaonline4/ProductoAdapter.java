@@ -35,7 +35,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ProductoAdapter.ViewHolder holder, int position) {
         holder.nombre.setText(arrayList.get(position).getNombre());
-        holder.precio.setText("Precio: "+arrayList.get(position).getPrecio().toString());
+        holder.precio.setText("Precio: $"+arrayList.get(position).getPrecio().toString());
         Glide.with(context).load(arrayList.get(position).getImagen()).into(holder.imagen);
 
         holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(arrayList.get(position)));

@@ -42,6 +42,11 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         return arrayList.size();
     }
 
+    public void searchDataList(ArrayList<Cliente> searchList){
+        arrayList = searchList;
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView nombre, email;
         public ViewHolder(@NonNull View itemView) {
